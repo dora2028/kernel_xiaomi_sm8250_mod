@@ -21,7 +21,6 @@ jobs:
       matrix:
         device:
           - elish
-          - enuma
         variant:
           - miui
           - aosp
