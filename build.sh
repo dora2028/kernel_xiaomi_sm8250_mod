@@ -134,16 +134,16 @@ rm -rf anykernel/
 echo "Clone AnyKernel3 for packing kernel (repo: https://github.com/liyafe1997/AnyKernel3)"
 git clone https://github.com/liyafe1997/AnyKernel3 -b kona --single-branch --depth=1 anykernel
 
-# Add git commit hash to local version: 4.19.325-perf-g<12-char-hash>
+# Add date to local version
 local_version_str="-perf"
-local_version_git_str="-perf-g$(git rev-parse --short=12 HEAD 2>/dev/null || echo unknown)"
+local_version_date_str="-FuXue1.0-$(date +%Y%m%d)"
 
 DTS_SOURCE=arch/arm64/boot/dts/vendor/qcom
 
 # Restore the working tree even when a build fails midway. Both steps are
 # idempotent on a successful build.
 cleanup() {
-    sed -i "s/${local_version_git_str}/${local_version_str}/g" \
+    sed -i "s/${local_version_date_str}/${local_version_str}/g" \
         "arch/arm64/configs/${TARGET_DEVICE}_defconfig" 2>/dev/null || true
     if [ -d .dts.bak ]; then
         rm -rf "${DTS_SOURCE}"
@@ -152,7 +152,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-sed -i "s/${local_version_str}/${local_version_git_str}/g" arch/arm64/configs/${TARGET_DEVICE}_defconfig
+sed -i "s/${local_version_str}/${local_version_date_str}/g" arch/arm64/configs/${TARGET_DEVICE}_defconfig
 
 # ------------- Building for AOSP -------------
 # AOSP builds keep the stock display DTS untouched; the MIUI-specific panel
