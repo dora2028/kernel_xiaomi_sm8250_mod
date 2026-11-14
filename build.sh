@@ -135,9 +135,9 @@ rm -rf anykernel/
 echo "Clone AnyKernel3 for packing kernel (repo: https://github.com/liyafe1997/AnyKernel3)"
 git clone https://github.com/liyafe1997/AnyKernel3 -b kona --single-branch --depth=1 anykernel
 
-# Add git commit hash to local version: 4.19.325-perf-g<12-char-hash>
+# Add git commit hash to local version: 4.19.325-perf-<13-char-hash>
 local_version_str="-perf"
-local_version_git_str="-perf-g$(git rev-parse --short=12 HEAD 2>/dev/null || echo unknown)"
+local_version_git_str="-perf-$(git rev-parse --short=13 HEAD 2>/dev/null || echo unknown)"
 
 DTS_SOURCE=arch/arm64/boot/dts/vendor/qcom
 
