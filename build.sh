@@ -67,7 +67,8 @@ export PATH="/usr/lib/ccache:$PATH"
 echo "CCACHE_DIR: [$CCACHE_DIR]"
 
 
-MAKE_ARGS="ARCH=arm64 SUBARCH=arm64 O=out CC=clang CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- CROSS_COMPILE_COMPAT=arm-linux-gnueabi- CLANG_TRIPLE=aarch64-linux-gnu-"
+# LOCALVERSION= (empty) stops scripts/setlocalversion from appending "+"
+MAKE_ARGS="ARCH=arm64 SUBARCH=arm64 O=out CC=clang CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- CROSS_COMPILE_COMPAT=arm-linux-gnueabi- CLANG_TRIPLE=aarch64-linux-gnu- LOCALVERSION="
 
 
 if [ "$1" == "j1" ]; then
@@ -167,13 +168,6 @@ make $MAKE_ARGS ${TARGET_DEVICE}_defconfig
 
 # Disable DEBUG_INFO to avoid gcc-objdump DWARF5 warning spam
 scripts/config --file out/.config -d DEBUG_INFO
-
-# VINTF: framework matrix (compatibility_matrix.5.xml, kernel 4.19.110) requires
-# both configs absent. Their presence makes Build.isBuildConsistent() fail and
-# MIUI shows "internal problem" dialog on every boot.
-scripts/config --file out/.config \
-    -d SYSVIPC \
-    -d IP6_NF_NAT
 
 if [ $KSU_ENABLE -eq 1 ]; then
     scripts/config --file out/.config \
@@ -297,13 +291,6 @@ make $MAKE_ARGS ${TARGET_DEVICE}_defconfig
 
 # Disable DEBUG_INFO to avoid gcc-objdump DWARF5 warning spam
 scripts/config --file out/.config -d DEBUG_INFO
-
-# VINTF: framework matrix (compatibility_matrix.5.xml, kernel 4.19.110) requires
-# both configs absent. Their presence makes Build.isBuildConsistent() fail and
-# MIUI shows "internal problem" dialog on every boot.
-scripts/config --file out/.config \
-    -d SYSVIPC \
-    -d IP6_NF_NAT
 
 if [ $KSU_ENABLE -eq 1 ]; then
     scripts/config --file out/.config \
