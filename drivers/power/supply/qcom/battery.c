@@ -634,33 +634,17 @@ static ssize_t charging_bypass_store(struct class *c,
 		chip->chg_disable_votable = find_votable("CHG_DISABLE");
 	if (!chip->chg_disable_votable)
 		return -EAGAIN;
-	if (!chip->cp_disable_votable)
-		chip->cp_disable_votable = find_votable("CP_DISABLE");
 
 	chip->charging_bypass = enable;
 
-	if (enable) {
+	if (enable)
 		vote(chip->chg_disable_votable, CHG_BYPASS_VOTER, true, 0);
-		/*
-		 * Kill a running charge-pump session right away. Without
-		 * this, the CP IC (e.g. LN8000) keeps drawing current for
-		 * up to a minute after boot until its own state machine
-		 * tears the session down.
-		 */
-		if (chip->cp_disable_votable)
-			vote(chip->cp_disable_votable, CHG_BYPASS_VOTER,
-			     true, 0);
-	}
 
 	vote(chip->pl_disable_votable, CHG_BYPASS_VOTER, enable, 0);
 	vote(chip->fcc_votable, CHG_BYPASS_VOTER, enable, 0);
 
-	if (!enable) {
+	if (!enable)
 		vote(chip->chg_disable_votable, CHG_BYPASS_VOTER, false, 0);
-		if (chip->cp_disable_votable)
-			vote(chip->cp_disable_votable, CHG_BYPASS_VOTER,
-			     false, 0);
-	}
 
 	return count;
 }
